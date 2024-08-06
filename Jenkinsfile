@@ -8,7 +8,7 @@ pipeline {
   agent any
   
   stages {
-    stage ('Build Docker Image') {
+    stage('Build Docker Image') {
       steps {
         script {
           dockerImage = docker.build registry + ":$BUILD_NUMBER"
@@ -16,18 +16,19 @@ pipeline {
       }
     }
 
-    Stage('Push to DockerHub')
+    stage('Push to DockerHub') {
       steps {
         script {
           docker.withRegistry('', registryCredential ) {
-            docker.Image.push()
+            docker.Image.push('$BUILD_NUMBER')
           }
         }
       }
-  }
-    stage('Test Run'){
+    }
+
+    stage('Test Run') {
       steps {
-        sh 'docker run -d cyberfrat:$BUILD_NUMBER'
+        sh 'docker run -d  registry:$BUILD_NUMBER'
       }
     }
   }
